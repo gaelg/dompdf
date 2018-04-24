@@ -72,9 +72,16 @@ class HTML5_InputStream {
         // We previously had an mbstring implementation here, but that
         // implementation is heavily non-conforming, so it's been
         // omitted.
+        /*
+          This code gives "Wrong charset, conversion from UTF-8 
+          to UTF-8//IGNORE is not allowed" on some PHP environments.
+          It's been replaced with the mbstring code below.
         if (extension_loaded('iconv')) {
             // non-conforming
             $data = @iconv('UTF-8', 'UTF-8//IGNORE', $data);
+        */
+        if (extension_loaded('mbstring')) {
+            $data = mb_convert_encoding($data, 'UTF-8', 'UTF-8');
         } else {
             // we can make a conforming native implementation
             throw new Exception('Not implemented, please install iconv');
